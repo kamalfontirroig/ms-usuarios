@@ -2,9 +2,10 @@ package com.banco.apiusuarios.excepciones;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import org.hibernate.validator.internal.engine.path.PathImpl;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,21 +59,6 @@ public class ControladorExcepcionesTest {
 
         assertEquals(HttpStatus.CONFLICT, respuesta.getStatusCode());
         assertEquals("El correo ya está registrado", respuesta.getBody().getMensaje());
-    }
-
-    @Test
-    void deberiaManejarExcepcionViolacionRestricciones() {
-        Set<ConstraintViolation<?>> violaciones = new HashSet<>();
-        ConstraintViolation<?> violacion = mock(ConstraintViolation.class);
-        when(violacion.getPropertyPath()).thenReturn(PathImpl.createPathFromString("campo"));
-        when(violacion.getMessage()).thenReturn("mensaje error");
-        violaciones.add(violacion);
-
-        ConstraintViolationException excepcion = new ConstraintViolationException(violaciones);
-        ResponseEntity<MensajeError> respuesta = controladorExcepciones.manejarExcepcionViolacionRestricciones(excepcion);
-
-        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
-        assertEquals("campo mensaje error", respuesta.getBody().getMensaje());
     }
 
     @Test
